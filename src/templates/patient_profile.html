@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Profile - Dr. Hema's Dental Studio{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .patient-info-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: 1px solid #e9ecef;
+        margin-bottom: 2rem;
+    }
+    
+    .info-section {
+        margin-bottom: 2rem;
+    }
+    
+    .info-section h4 {
+        color: #0d6efd;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+    
+    .info-row {
+        display: flex;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f1f3f5;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #495057;
+        width: 200px;
+        flex-shrink: 0;
+    }
+    
+    .info-value {
+        color: #212529;
+    }
+    
+    .visit-history {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: 1px solid #e9ecef;
+    }
+    
+    .visit-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+    
+    .visit-card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .visit-date {
+        font-weight: 600;
+        color: #0d6efd;
+        margin-bottom: 0.5rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-add-followup {
+        background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(25, 135, 84, 0.3);
+    }
+    
+    .btn-add-followup:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(25, 135, 84, 0.4);
+        color: white;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    @media (max-width: 768px) {
+        .info-row {
+            flex-direction: column;
+        }
+        
+        .info-label {
+            width: 100%;
+            margin-bottom: 0.25rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h2><i class="bi bi-person-circle me-2"></i>{{ patient['Full Name'] }}</h2>
+                <p class="mb-0">Patient ID: {{ patient['Patient ID'] }}</p>
+            </div>
+            <div class="action-buttons">
+                <a href="{{ url_for('add_followup', patient_id=patient['Patient ID']) }}" class="btn-add-followup">
+                    <i class="bi bi-plus-circle"></i> Add Clinical Examination
+                </a>
+                <a href="{{ url_for('existing_visitor') }}" class="btn btn-outline-light">
+                    <i class="bi bi-arrow-left"></i> Back to Search
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="patient-info-card">
+        <div class="info-section">
+            <h4><i class="bi bi-person-vcard me-2"></i>Personal Information</h4>
+            <div class="info-row">
+                <span class="info-label">Full Name:</span>
+                <span class="info-value">{{ patient.get('Full Name', '') }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Age:</span>
+                <span class="info-value">{{ patient.get('Age', '') }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Gender:</span>
+                <span class="info-value">{{ patient.get('Gender', '') }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Date of Birth:</span>
+                <span class="info-value">{{ patient.get('Date of Birth', '') }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Address:</span>
+                <span class="info-value">{{ patient.get('Address', '') }}</span>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h4><i class="bi bi-telephone me-2"></i>Contact Information</h4>
+            <div class="info-row">
+                <span class="info-label">Phone:</span>
+                <span class="info-value">{{ patient.get('Phone', '') }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ patient.get('Email', '') }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Emergency Contact:</span>
+                <span class="info-value">{{ patient.get('Emergency Contact', '') }} ({{ patient.get('Relationship', '') }})</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Emergency Phone:</span>
+                <span class="info-value">{{ patient.get('Emergency Phone', '') }}</span>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h4><i class="bi bi-heart-pulse me-2"></i>Medical Information</h4>
+            <div class="info-row">
+                <span class="info-label">Medical Conditions:</span>
+                <span class="info-value">{{ patient.get('Medical Conditions', 'None reported') }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">First Dental Visit:</span>
+                <span class="info-value">{{ patient.get('First Dental Visit', '') }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Reason for Visit:</span>
+                <span class="info-value">{{ patient.get('Reason for Visit', '') }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Dental Issues:</span>
+                <span class="info-value">{{ patient.get('Dental Issues', 'None reported') }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="visit-history">
+        <h3 class="mb-4"><i class="bi bi-clock-history me-2"></i>Visit History</h3>
+        
+        {% if history %}
+            {% for visit in history %}
+            <div class="visit-card">
+                <div class="visit-date">
+                    <i class="bi bi-calendar3"></i> {{ visit.get('Visit Date', '') }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Chief Complaint:</strong> {{ visit.get('Chief Complaint', 'N/A') }}</p>
+                        <p><strong>Diagnosis:</strong> {{ visit.get('Diagnosis', 'N/A') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Treatment:</strong> {{ visit.get('Treatment', 'N/A') }}</p>
+                        <p><strong>Next Appointment:</strong> {{ visit.get('Next Appointment', 'N/A') }}</p>
+                    </div>
+                </div>
+                {% if visit.get('Prescription') %}
+                <p><strong>Prescription:</strong> {{ visit.get('Prescription') }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="bi bi-clipboard2-x"></i>
+                <p>No visit history found for this patient.</p>
+                <p>Click "Add Clinical Examination" to record the first visit.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

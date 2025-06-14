@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Patient - Dr. Hema's Dental Studio{% endblock %}
+
+{% block extra_css %}
+<style>
+    .search-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .search-header {
+        background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .search-form {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: 1px solid #e9ecef;
+        margin-bottom: 2rem;
+    }
+    
+    .search-results {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: 1px solid #e9ecef;
+        display: none;
+    }
+    
+    .patient-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .patient-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-color: #0d6efd;
+    }
+    
+    .patient-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #0d6efd;
+        margin-bottom: 0.5rem;
+    }
+    
+    .patient-info {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .search-type-toggle {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .toggle-option {
+        flex: 1;
+        padding: 0.75rem;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .toggle-option.active {
+        background: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    .loading {
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        border-width: 0.3rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <div class="search-header">
+        <h2><i class="bi bi-search me-2"></i>Search Existing Patient</h2>
+        <p class="mb-0">Find patient records by ID or name</p>
+    </div>
+    
+    <div class="search-form">
+        <form id="searchForm" onsubmit="searchPatients(event)">
+            <div class="search-type-toggle">
+                <div class="toggle-option active" onclick="setSearchType('id')" data-type="id">
+                    <i class="bi bi-upc"></i> Search by Patient ID
+                </div>
+                <div class="toggle-option" onclick="setSearchType('name')" data-type="name">
+                    <i class="bi bi-person"></i> Search by Name
+                </div>
+            </div>
+            
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" 
+                       class="form-control" 
+                       id="searchTerm" 
+                       name="search_term" 
+                       placeholder="Enter patient ID..." 
+                       required
+                       autocomplete="off">
+                <button class="btn btn-primary" type="submit">
+                    Search
+                </button>
+            </div>
+        </form>
+        
+        <div class="mt-3">
+            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+    
+    <div class="search-results" id="searchResults">
+        <h3 class="mb-3">Search Results</h3>
+        <div id="resultsContainer">
+            <!-- Results will be populated here -->
+        </div>
+    </div>
+</div>
+
+<script>
+let searchType = 'id';
+
+function setSearchType(type) {
+    searchType = type;
+    document.querySelectorAll('.toggle-option').forEach(opt => {
+        opt.classList.remove('active');
+    });
+    document.querySelector(`[data-type="${type}"]`).classList.add('active');
+    
+    const searchInput = document.getElementById('searchTerm');
+    searchInput.placeholder = type === 'id' ? 'Enter patient ID...' : 'Enter patient name...';
+    searchInput.focus();
+}
+
+function searchPatients(event) {
+    event.preventDefault();
+    
+    const searchTerm = document.getElementById('searchTerm').value.trim();
+    if (!searchTerm) return;
+    
+    const resultsDiv = document.getElementById('searchResults');
+    const resultsContainer = document.getElementById('resultsContainer');
+    
+    // Show loading state
+    resultsDiv.style.display = 'block';
+    resultsContainer.innerHTML = `
+        <div class="loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Searching...</span>
+            </div>
+            <p class="mt-2">Searching for patients...</p>
+        </div>
+    `;
+    
+    // Make the search request
+    fetch(`/search_patient?search_term=${encodeURIComponent(searchTerm)}&search_type=${searchType}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                resultsContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i> Error: ${data.error}
+                    </div>
+                `;
+                return;
+            }
+            
+            if (data.patients && data.patients.length > 0) {
+                let html = '';
+                data.patients.forEach(patient => {
+                    html += `
+                        <div class="patient-card" onclick="viewPatient('${patient['Patient ID']}')">
+                            <div class="patient-name">
+                                <i class="bi bi-person-circle"></i> ${patient['Full Name'] || 'Unknown'}
+                            </div>
+                            <div class="patient-info">
+                                <div><strong>ID:</strong> ${patient['Patient ID']}</div>
+                                <div><strong>Age/Gender:</strong> ${patient['Age'] || 'N/A'} / ${patient['Gender'] || 'N/A'}</div>
+                                <div><strong>Phone:</strong> ${patient['Phone'] || 'N/A'}</div>
+                                <div><strong>Registered:</strong> ${patient['Registration Date'] || 'N/A'}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                resultsContainer.innerHTML = html;
+            } else {
+                resultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-search"></i>
+                        <p>No patients found matching your search.</p>
+                        <p class="text-muted">Try searching with a different term.</p>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            resultsContainer.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i> Error occurred while searching. Please try again.
+                </div>
+            `;
+        });
+}
+
+function viewPatient(patientId) {
+    window.location.href = `/patient_profile/${patientId}`;
+}
+
+// Auto-focus on search input
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('searchTerm').focus();
+});
+
+// Allow Enter key to submit search
+document.getElementById('searchTerm').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        searchPatients(e);
+    }
+});
+</script>
+{% endblock %}

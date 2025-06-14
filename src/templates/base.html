@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>{% block title %}Dr. Hema's Dental Studio{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Signature Pad CSS (for consent page) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.min.css">
+    
+    <!-- Custom CSS (link to the enhanced CSS file) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced-style.css') }}">
+    
+    <!-- Page specific styles -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container py-4">
+        <!-- Header with Logo -->
+        <header class="mb-4">
+            <div class="logo-container text-center">
+                <a href="{{ url_for('home') }}" class="text-decoration-none">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Dr. Hema's Dental Studio Logo" class="logo mb-3">
+                    <h2 class="clinic-name">Dr. Hema's Dental Studio</h2>
+                </a>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        
+        <!-- Footer -->
+        <footer class="text-center mt-5 pt-4">
+            <p class="text-muted small">
+                <i class="bi bi-geo-alt"></i> 187, Sadguru Enclave, Perumbakkam Main Road, Chennai - 600100<br>
+                <i class="bi bi-telephone"></i> +91 98401 68576 | <i class="bi bi-envelope"></i> drhemasdentalstudio@gmail.com
+            </p>
+            <p class="text-muted small">© 2024 Dr. Hema's Dental Studio. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Signature Pad JS (only loaded when needed) -->
+    {% if 'consent' in request.endpoint %}
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    {% endif %}
+    
+    <!-- Form Validation Script -->
+    <script>
+        // Enhanced form validation
+        (function() {
+            'use strict';
+            
+            // Fetch all forms with needs-validation class
+            var forms = document.querySelectorAll('.needs-validation');
+            
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    form.classList.add('was-validated');
+                    
+                    // Special handling for signature pad
+                    if (window.signaturePad && document.getElementById('signature-data')) {
+                        if (window.signaturePad.isEmpty()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            document.getElementById('signature-pad').parentElement.classList.add('is-invalid');
+                        } else {
+                            document.getElementById('signature-data').value = window.signaturePad.toDataURL();
+                        }
+                    }
+                }, false);
+            });
+            
+            // Smooth scroll for navigation
+            document.querySelectorAll('a.nav-button').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href').startsWith('#')) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
+                });
+            });
+            
+            // Add touch feedback for mobile devices
+            if ('ontouchstart' in window) {
+                document.querySelectorAll('.card, .btn').forEach(element => {
+                    element.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.98)';
+                    });
+                    element.addEventListener('touchend', function() {
+                        this.style.transform = '';
+                    });
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Page specific scripts -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

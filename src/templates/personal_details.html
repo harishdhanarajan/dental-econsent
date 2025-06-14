@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Personal Details - Dr. Hema's Dental Studio{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="progress-container">
+        <div class="progress-steps">
+            <div class="progress-step active">Personal Details</div>
+            <div class="progress-step">Medical History</div>
+            <div class="progress-step">Dental History</div>
+            <div class="progress-step">E-Consent</div>
+            <div class="progress-percentage">25%</div>
+        </div>
+        <div class="progress mt-2">
+            <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+    
+    <h2 class="mb-4">Personal Details</h2>
+    
+    <form action="{{ url_for('personal_details') }}" method="post" class="needs-validation" novalidate>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="full_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="full_name" name="full_name" required>
+                <div class="invalid-feedback">
+                    Please enter your full name.
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label for="age" class="form-label">Age <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="age" name="age" min="1" max="120" required>
+                <div class="invalid-feedback">
+                    Please enter a valid age.
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                <select class="form-select" id="gender" name="gender" required>
+                    <option value="" selected disabled>Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select your gender.
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="dob" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" id="dob" name="dob" required>
+                <div class="invalid-feedback">
+                    Please enter your date of birth.
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="address" name="address" required>
+                <div class="invalid-feedback">
+                    Please enter your address.
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9\-\+\s\(\)]{10,15}" required>
+                <div class="invalid-feedback">
+                    Please enter a valid phone number.
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" id="email" name="email" required>
+                <div class="invalid-feedback">
+                    Please enter a valid email address.
+                </div>
+            </div>
+        </div>
+        
+        <h4 class="mt-4 mb-3">Emergency Contact Information</h4>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="emergency_contact" class="form-label">Emergency Contact Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="emergency_contact" name="emergency_contact" required>
+                <div class="invalid-feedback">
+                    Please provide an emergency contact.
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="relationship" class="form-label">Relationship <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="relationship" name="relationship" required>
+                <div class="invalid-feedback">
+                    Please specify the relationship.
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label for="emergency_phone" class="form-label">Emergency Contact Phone <span class="text-danger">*</span></label>
+                <input type="tel" class="form-control" id="emergency_phone" name="emergency_phone" pattern="[0-9\-\+\s\(\)]{10,15}" required>
+                <div class="invalid-feedback">
+                    Please enter a valid phone number.
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between">
+            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary btn-nav nav-button">Back</a>
+            <button type="submit" class="btn btn-primary btn-nav">Next: Medical History</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

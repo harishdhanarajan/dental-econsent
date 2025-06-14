@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}E-Consent - Dr. Hema's Dental Studio{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="progress-container">
+        <div class="progress-steps">
+            <div class="progress-step completed">Personal Details</div>
+            <div class="progress-step completed">Medical History</div>
+            <div class="progress-step completed">Dental History</div>
+            <div class="progress-step active">E-Consent</div>
+            <div class="progress-percentage">100%</div>
+        </div>
+        <div class="progress mt-2">
+            <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+    
+    <h2 class="mb-4">E-Consent Form</h2>
+    
+    <div class="mb-4">
+        <h3>Consent for Dental Treatment</h3>
+        <p>I, the undersigned, hereby consent to the following:</p>
+        <ol>
+            <li>I authorize Dr. Hema and staff to perform necessary dental procedures, including examinations, X-rays, cleanings, and treatments as may be required for proper dental care.</li>
+            <li>I understand that dental procedures may involve risks, and I have had the opportunity to ask questions about these risks.</li>
+            <li>I acknowledge that no guarantees have been made regarding the results of treatment.</li>
+            <li>I consent to the administration of local anesthesia if necessary for my dental treatment.</li>
+            <li>I understand that I am responsible for payment of all services rendered on my behalf or my dependents.</li>
+            <li>I agree to follow all post-treatment instructions provided by the dental team.</li>
+        </ol>
+        <p>I have read and understand the above consent form. I acknowledge that I have been given the opportunity to ask questions regarding my treatment, and all my questions have been answered to my satisfaction.</p>
+        
+        <h3>Privacy Practices Acknowledgment</h3>
+        <p>I understand that I have certain rights to privacy regarding my protected health information. I understand that this information can and will be used to:</p>
+        <ul>
+            <li>Conduct, plan, and direct my treatment and follow-up among multiple healthcare providers who may be involved in that treatment directly and indirectly.</li>
+            <li>Obtain payment from third-party payers.</li>
+            <li>Conduct normal healthcare operations such as quality assessments and physician certifications.</li>
+        </ul>
+    </div>
+    
+    <form action="{{ url_for('register') }}" method="post" class="needs-validation" novalidate id="consent-form">
+        <div class="mb-4">
+            <label for="signature-pad" class="form-label">Patient/Guardian Signature: <span class="text-danger">*</span></label>
+            <div class="signature-pad-container">
+                <canvas id="signature-pad" class="signature-pad"></canvas>
+            </div>
+            <input type="hidden" id="signature-data" name="signature_data" required>
+            <div class="invalid-feedback">
+                Please provide your signature.
+            </div>
+            <button type="button" id="clear-signature" class="btn btn-sm btn-outline-secondary mt-2">Clear Signature</button>
+        </div>
+        
+        <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-outline-secondary btn-nav nav-button" onclick="window.history.back();">Back</button>
+            <button type="submit" class="btn btn-primary btn-nav">Register</button>
+        </div>
+        
+        <!-- Hidden iframe for background download -->
+        <iframe id="download-frame" name="download-frame" style="display:none;"></iframe>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/registration-success.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const canvas = document.getElementById('signature-pad');
+        window.signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            penColor: 'blue'
+        });
+        
+        // Set canvas dimensions
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            window.signaturePad.clear(); // Otherwise isEmpty() might return incorrect value
+        }
+        
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+        
+        // Clear signature button
+        document.getElementById('clear-signature').addEventListener('click', function() {
+            window.signaturePad.clear();
+        });
+    });
+</script>
+{% endblock %}

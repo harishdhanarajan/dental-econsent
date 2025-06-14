@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Registration Success - Dr. Hema's Dental Studio{% endblock %}
+
+{% block content %}
+<div class="form-container text-center">
+    <div class="alert alert-success mb-4">
+        <h2><i class="bi bi-check-circle"></i> Registration Successful!</h2>
+        <p class="lead">The patient has been registered successfully.</p>
+    </div>
+    
+    <div class="alert alert-info mb-4" id="download-status">
+        <div class="d-flex align-items-center justify-content-center">
+            <div class="spinner-border spinner-border-sm me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <span>Your PDF is being prepared for download...</span>
+        </div>
+    </div>
+    
+    <div class="alert alert-success mb-4" id="download-success" style="display: none;">
+        <i class="bi bi-download"></i> PDF download completed successfully!
+    </div>
+    
+    <div class="alert alert-warning mb-4" id="download-error" style="display: none;">
+        <i class="bi bi-exclamation-triangle"></i> Download failed. Please use the manual download button below.
+    </div>
+    
+    <p>The patient's information has been saved to our records and the PDF form has been automatically downloaded to your device.</p>
+    
+    <p>Patient ID: <strong id="patient-id">{{ patient_id }}</strong></p>
+    
+    <div class="mt-4 mb-4">
+        <a href="{{ url_for('download_pdf', filename=filename) }}" 
+           class="btn btn-outline-primary me-3" id="manual-download">
+            <i class="bi bi-download"></i> Download PDF Manually
+        </a>
+    </div>
+    
+    <div class="mt-5">
+        <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">Return to Home</a>
+    </div>
+</div>
+
+<script>
+// Auto-download functionality
+function downloadPDF() {
+    const downloadUrl = "{{ url_for('download_pdf', filename=filename) }}";
+    
+    // Method 1: Create hidden iframe for download
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = downloadUrl;
+    document.body.appendChild(iframe);
+    
+    // Method 2: Create invisible link and click it
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = "{{ filename }}";
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Show success message after delay
+    setTimeout(() => {
+        document.getElementById('download-status').style.display = 'none';
+        document.getElementById('download-success').style.display = 'block';
+    }, 2000);
+}
+
+// Start auto-download when page loads
+window.addEventListener('load', function() {
+    // Small delay to ensure page is fully rendered
+    setTimeout(downloadPDF, 1000);
+});
+
+// Handle manual download button
+document.getElementById('manual-download').addEventListener('click', function(e) {
+    e.preventDefault();
+    downloadPDF();
+});
+
+// Fallback: Show error if download doesn't complete
+setTimeout(() => {
+    const downloadStatus = document.getElementById('download-status');
+    const downloadError = document.getElementById('download-error');
+    
+    if (downloadStatus && downloadStatus.style.display !== 'none') {
+        downloadStatus.style.display = 'none';
+        downloadError.style.display = 'block';
+    }
+}, 5000);
+</script>
+{% endblock %}

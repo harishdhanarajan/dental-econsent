@@ -1,0 +1,6 @@
+data
+models
+routes
+static
+templates
+__pycache__

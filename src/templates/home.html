@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Home - Dr. Hema's Dental Studio</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        /* Insert the enhanced CSS here or link to external file */
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --gradient-start: #e3f2fd;
+            --gradient-end: #bbdefb;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .logo-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            border: 2px solid rgba(13, 110, 253, 0.1);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .logo {
+            max-height: 120px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .clinic-name {
+            color: var(--primary-color);
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(13, 110, 253, 0.05) 0%, transparent 70%);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary-color);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.1);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* iPad specific styles */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .container {
+                padding: 30px;
+            }
+            
+            .card {
+                height: 280px;
+            }
+            
+            .card-icon svg {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 767px) {
+            .clinic-name {
+                font-size: 1.8rem;
+            }
+            
+            .card {
+                height: auto;
+                padding: 40px 20px;
+            }
+            
+            .logo {
+                max-height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container text-center mb-5">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Dr. Hema's Dental Studio Logo" class="logo">
+            <h1 class="clinic-name mt-3">Dr. Hema's Dental Studio</h1>
+            <p class="text-muted mt-2">"Where Little Teeth Shines and Smiles"</p>
+        </div>
+        
+        <main class="page-transition">
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-5 col-lg-5 col-xl-4">
+                    <a href="{{ url_for('personal_details') }}" class="text-decoration-none nav-button">
+                        <div class="card shadow">
+                            <div class="card-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+                                    <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                                    <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+                                </svg>
+                            </div>
+                            <div class="card-title">New Patient Registration</div>
+                            <p class="text-muted small mt-2">First time visitor? Register here</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-5 col-lg-5 col-xl-4">
+                    <a href="{{ url_for('existing_visitor') }}" class="text-decoration-none nav-button">
+                        <div class="card shadow">
+                            <div class="card-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-person-check" viewBox="0 0 16 16">
+                                    <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                                    <path fill-rule="evenodd" d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                                </svg>
+                            </div>
+                            <div class="card-title">Existing Visitor</div>
+                            <p class="text-muted small mt-2">Already our patient? Check in here</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="text-center mt-5">
+            <p class="text-muted small">© 2024 Dr. Hema's Dental Studio. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/form-validation.js') }}"></script>
+</body>
+</html>
