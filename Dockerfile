@@ -17,10 +17,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 3) Copy your application code
 COPY src/ ./src
 
-# 4) Tell Flask how to launch
+# 4) Copy and make the entrypoint script executable
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# 5) Environment for Flask
 ENV FLASK_APP=src/main.py
 ENV FLASK_ENV=production
 
-# 5) Expose port and start
+# 6) Expose port and use entrypoint
 EXPOSE 5000
-CMD ["python", "src/main.py"]
+CMD ["/entrypoint.sh"]
