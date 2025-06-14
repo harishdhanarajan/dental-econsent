@@ -16,8 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src
 
 COPY entrypoint.sh /entrypoint.sh
--  RUN chmod +x /entrypoint.sh
-+  RUN dos2unix /entrypoint.sh && chmod +x /entrypoint.sh
+RUN dos2unix /entrypoint.sh && chmod +x /entrypoint.sh
 
 
 # 5) Environment for Flask
