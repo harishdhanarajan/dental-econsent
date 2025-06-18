@@ -1,46 +1,18 @@
 // Registration success handling
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if form exists on the page
     const consentForm = document.getElementById('consent-form');
     if (consentForm) {
         consentForm.addEventListener('submit', function(e) {
-            // Prevent default to handle validation first
-            e.preventDefault();
-            
-            // Validate signature - use the global instance created in the template
+
             if (!window.signaturePad || window.signaturePad.isEmpty()) {
+                e.preventDefault();
                 alert('Please provide a signature');
                 return false;
             }
-            
-            // Set signature data to hidden field
             const signatureData = document.getElementById('signature-data');
             if (signatureData) {
                 signatureData.value = window.signaturePad.toDataURL();
             }
-            
-            // Show thank you modal
-            showThankYouModal();
-            
-            // Submit form to hidden iframe for background download
-            const downloadFrame = document.getElementById('download-frame');
-            if (!downloadFrame) {
-                // Create iframe if it doesn't exist
-                const newFrame = document.createElement('iframe');
-                newFrame.style.display = 'none';
-                newFrame.id = 'download-frame';
-                newFrame.name = 'download-frame';
-                document.body.appendChild(newFrame);
-            }
-            
-            // Set target and submit
-            consentForm.target = 'download-frame';
-            consentForm.submit();
-            
-            // Redirect to home page after 5 seconds
-            setTimeout(function() {
-                window.location.href = '/';
-            }, 5000);
         });
     }
 });
