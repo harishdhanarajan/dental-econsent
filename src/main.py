@@ -129,11 +129,12 @@ def register():
 
     # Generate PDF
     filename = f"patient_{patient_id}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    signature_data = request.form.get('signature_data') or session.get('signature_data', '')
     pdf_data = {
         'personal_details': session.get('personal_details', {}),
         'medical_history': session.get('medical_history', {}),
         'dental_history': session.get('dental_history', {}),
-        'signature_data': session.get('signature_data', ''),
+        'signature_data': signature_data,
         'registration_date': registration_date,
         'patient_id': patient_id
     }
