@@ -148,7 +148,11 @@ def register():
     # Clear form data from session but keep pdf info
     for key in ['personal_details', 'medical_history', 'dental_history', 'signature_data']:
         session.pop(key, None)
-    return redirect(url_for('registration_success'))
+    return render_template(
+        'registration_success.html',
+        patient_id=patient_id,
+        filename=filename
+    )
 
 @app.route("/registration_success")
 def registration_success():
