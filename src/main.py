@@ -263,7 +263,25 @@ def add_followup(patient_id):
     except Exception as e:
         flash(f'Error recording follow-up: {e}','danger')
         return redirect(url_for('patient_profile', patient_id=patient_id))
+# Remove below lines in case of deployment issue
+@app.route("/view_followup/<patient_id>")
+def view_followup(patient_id):
+    visit_date = request.args.get('visit_date','')
+    try:
+        raw = patients_ws.get_all_records()
+        patient = clean_record(next((r for r in raw if r.get('Patient ID')==patient_id), {}))
 
+        rawf = followup_ws.get_all_records()
+        visit = next((clean_record(r) for r in rawf if clean_record(r).get('Patient ID')==patient_id and clean_record(r).get('Visit Date')==visit_date), None)
+
+        if not visit:
+            flash('Visit not found','warning')
+            return redirect(url_for('patient_profile', patient_id=patient_id))
+
+        return render_template('view_followup.html', patient=patient, visit=visit)
+    except Exception as e:
+        flash(f'Error loading visit: {e}','danger')
+        return redirect(url_for('patient_profile', patient_id=patient_id))
 @app.route("/validate_age", methods=["POST"])
 def validate_age():
     try:
