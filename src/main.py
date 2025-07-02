@@ -241,6 +241,7 @@ def add_followup(patient_id):
                 'Radiographic Observations': request.form.get('radiographic_observations',''),
                 'Diagnosis': request.form.get('diagnosis',''),
                 'Treatment': request.form.get('treatment',''),
+                'Treatment Done': request.form.get('treatment_done',''),
                 'Prescription': request.form.get('prescription',''),
                 'Follow-up Notes': request.form.get('followup_notes',''),
                 'Next Appointment': request.form.get('next_appointment','')
