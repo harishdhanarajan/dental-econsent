@@ -282,6 +282,7 @@ def view_followup(patient_id):
     except Exception as e:
         flash(f'Error loading visit: {e}','danger')
         return redirect(url_for('patient_profile', patient_id=patient_id))
+        
 @app.route("/validate_age", methods=["POST"])
 def validate_age():
     try:
