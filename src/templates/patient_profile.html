@@ -66,6 +66,10 @@
         margin-bottom: 1rem;
         border: 1px solid #e9ecef;
         transition: all 0.3s ease;
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
     }
     
     .visit-card:hover {
@@ -220,7 +224,7 @@
         
         {% if history %}
             {% for visit in history %}
-            <div class="visit-card">
+            <a href="{{ url_for('view_followup', patient_id=patient['Patient ID'], visit_date=visit.get('Visit Date')) }}" class="visit-card text-decoration-none text-dark">
                 <div class="visit-date">
                     <i class="bi bi-calendar3"></i> {{ visit.get('Visit Date', '') }}
                 </div>
@@ -238,7 +242,7 @@
                 {% if visit.get('Prescription') %}
                 <p><strong>Prescription:</strong> {{ visit.get('Prescription') }}</p>
                 {% endif %}
-            </div>
+            </a>
             {% endfor %}
         {% else %}
             <div class="empty-state">
